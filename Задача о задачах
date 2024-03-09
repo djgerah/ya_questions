@@ -108,8 +108,7 @@ public:
         sort(matched_documents.begin(), matched_documents.end(),
              [](const Document& lhs, const Document& rhs) 
              {
-                 return abs((lhs.relevance - rhs.relevance) > EPSILON) 
-                     || (abs((lhs.relevance == rhs.relevance) > EPSILON) && lhs.id > rhs.id);
+                return abs((lhs.relevance - rhs.relevance) > EPSILON) || lhs.rating  > rhs.rating;
              });
         
         if (matched_documents.size() > MAX_RESULT_DOCUMENT_COUNT) 
@@ -118,12 +117,13 @@ public:
         }
         return matched_documents;
     }
-    
-   int GetDocumentCount() const {
-       return static_cast<int>(documents_.size());
-   }; 
-   
-   tuple<vector<string>, DocumentStatus> MatchDocument(const string& raw_query, 
+
+    int GetDocumentCount() const 
+    {
+        return static_cast<int>(documents_.size());
+    }; 
+
+    tuple<vector<string>, DocumentStatus> MatchDocument(const string& raw_query, 
                                                            int document_id) const 
    {
            vector<string> matched_words;
@@ -226,7 +226,7 @@ private:
         set<string> minus_words;
     };
 
-    Query ParseQuery(const string& text) const 
+   Query ParseQuery(const string& text) const 
     {
         Query query;
 
